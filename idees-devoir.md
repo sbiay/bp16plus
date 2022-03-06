@@ -11,6 +11,11 @@ Plan :
 	2. Langue des ouvrages
 	3. Adresses bibliographiques
 4. Jeux de données complémentaires
+	1. cerl-imprim-paris
+		1. Caractéristiques générales
+		2. Traitements
+			1. Ciblage des résultats pertinents
+			2. Récupération des données issues des notices
 5. Mise en place du travail de groupe
 
 ***
@@ -87,8 +92,6 @@ Source à mobiliser : CERL. Les notices du CERL les plus pertinentes sont de typ
 
 Les notices contiennent le référent ark de la BNF.
 
-Les adresses bibliographiques sont associées à des années d'activité.
-
 Méthode :
 1. Parser le fichier Json :
     - Les adresses bibliographiques sont situées dans ["rows"][index de liste des personnes]["data"]["place"][0]["part"][index de liste]["address"]
@@ -111,33 +114,35 @@ Méthode :
         - Développer le script `voirie.py`
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Jeux de données complémentaires</span>
-## cerl-imprim-paris
+## <span style="color : rgb(020, 080, 170, 0.8)">cerl-imprim-paris</span>
 
-### Caractéristiques générales
+### <span style="color : rgb(000, 200, 100, 0.7)">Caractéristiques générales</span>
 - Nom complet : cerl-imprim-paris
 - Définition : export de toutes les personnes de CERL répondant à "imprimeur" et "Paris" (4557) :
 
-### Acquisition
 - Méthode d'acquisition : liste des requêtes pour chaque 100 résultats dans `./requetes/cerl-imprim-paris.text`.
 - Exemples de requête : 
     - https://data.cerl.org/thesaurus/_search?query=(imprimeur%20paris)%20AND%20type%3Acnp&size=100&mode=default&format=json&from=1
     - https://data.cerl.org/thesaurus/_search?query=(imprimeur%20paris)%20AND%20type%3Acnp&size=100&mode=default&format=json&from=101
     - https://data.cerl.org/thesaurus/_search?query=(imprimeur%20paris)%20AND%20type%3Acnp&size=100&mode=default&format=json&from=201
 
-### Traitement
-=> Prévoir un traitement python pour récupérer, à partir de chaque id de type cnp, via la requête de type `https://data.cerl.org/thesaurus/cnp01118364?format=json&pretty` tous les ark, qui peuvent être précédés soit d'une adresse data BNF soit d'une adresse catalogue BNF (donc ne prendre que la fin)
+### <span style="color : rgb(000, 200, 100, 0.7)">Traitements</span>
+#### <span style="color : rgb(050, 100, 060, 0.7)">Ciblage des résultats pertinents</span>
+On élimine la majorité des lignes non pertinentes en appliquant un *filter* sur l'attribut `additional_display_line`, *contains* 15 : ce champ commence par les dates ; poser que le champ contient 15 élimine de nombreux imprimeur qui n'ont pas 15 dans leur date de naissance ou de mort.
 
-- Problème : ce fichier Json serait converti en 950 colonnes s'il était importé tel quel dans Dataiku. On procède donc à un parsage des données au moyen d'un script pour ne récupérer que celles répondant à certains conditions restreintes.
+On obtient le set `cerl-imprim-paris_filtered` (env. 1000 lignes au lieu de 4500).
 
-### Parsage
+#### <span style="color : rgb(050, 100, 060, 0.7)">Récupération des données issues des notices</span>
+On récupère au moyen d'un script python, `compute_cerl-imprim-paris-enrich.py` les données intéressantes dans la notice de chaque imprimeur à partir de l'`id` de type `cnp` contenu dans le jeu précédent
+
+La récupération de chaque notice se fait par une requête de type `https://data.cerl.org/thesaurus/cnp01118364?format=json&pretty` tous les ark, qui peuvent être précédés soit d'une adresse data BNF soit d'une adresse catalogue BNF (donc ne prendre que la fin)
+
+- Problème : chaque notice serait convertie en un tableau à 950 colonnes si elle était importée telle quelle dans Dataiku. On procède donc à un parsage des données au moyen du script pour ne récupérer que celles répondant à certains conditions restreintes.
+
 Les données nécessaires sont contenues sous les clés :
 - `id` : identifiant CERL ;
 - `extDataset` : s'y trouvent les liens data-BNF indispensables pour joindre des données à notre jeu principal ;
 - `place` : informations de localisation des activités des imprimeurs.
-
-Sélection des données :
-- Sous la clé `extDataset` : on récupère la première valeur qui corresponde à une URI Data-BNF
-- Sous la clé `place` :
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Mise en place du travail de groupe</span>
 Nous avons besoin :
