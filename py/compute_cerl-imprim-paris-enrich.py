@@ -26,9 +26,6 @@ with open("/home/sbiay/chantiers/bp16plus/rapports/compute_cerl-imprim-paris-enr
 
     # On parse les données du dataset sous la forme d'une liste de dictionnaires
     for my_row_as_dict in cerl_imprim_paris.iter_rows():
-        if i == 200:
-            break
-        
         # On récupère l'id
         # Pour s'assurer de ne pas ajouter deux dates, on pose comme condition que l'index courant
         # n'a pas encore reçu de date
@@ -51,7 +48,7 @@ with open("/home/sbiay/chantiers/bp16plus/rapports/compute_cerl-imprim-paris-enr
             if len(selection["dates"]) < i+1:
                 if noticeJson["data"].get("bioDates"):
                     for dates in noticeJson["data"]["bioDates"]:
-            
+
                         if dates["lang"] == "fre":
                             selection["dates"].append(dates["text"])
             # On récupère le lien vers la notice DataBNF
@@ -67,7 +64,7 @@ with open("/home/sbiay/chantiers/bp16plus/rapports/compute_cerl-imprim-paris-enr
                     for liens in noticeJson["data"]["extDataset"]:
                         if liens["searchTerm"][:18] == "http://catalogue.bn":
                             selection["dataBNF"].append("http://data.bnf.fr" + liens["searchTerm"][23:] + "#about")
-                        
+
             # On récupère l'adresse de l'imprimeur
             if len(selection["adresseParis"]) < i+1:
                 if noticeJson["data"].get("place"):
@@ -88,14 +85,10 @@ with open("/home/sbiay/chantiers/bp16plus/rapports/compute_cerl-imprim-paris-enr
             rapportJson.write(f"There was a problem accessing the equipment data on {my_row_as_dict['id']}.")
 
 # -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
-# Vérification de la cohérence des résultats
-for cle in selection:
-    print(cle + ": " + str(len(selection[cle])) + " - " + str(selection[cle][199]))
-
-# -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
+# On implémente les résultats dans un objet DataFrame
 cerl_imprim_paris_enrich_df = pd.DataFrame(selection)
 
 
-# Write recipe outputs
+# On écrit tout cela dans le dataset de sortie
 cerl_imprim_paris_enrich = dataiku.Dataset("cerl-imprim-paris-enrich")
 cerl_imprim_paris_enrich.write_with_schema(cerl_imprim_paris_enrich_df)
