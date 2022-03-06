@@ -133,7 +133,7 @@ On élimine la majorité des lignes non pertinentes en appliquant un *filter* su
 On obtient le set `cerl-imprim-paris_filtered` (env. 1000 lignes au lieu de 4500).
 
 #### <span style="color : rgb(050, 100, 060, 0.7)">Récupération des données issues des notices</span>
-On récupère au moyen d'un script python, `compute_cerl-imprim-paris-enrich.py` les données intéressantes dans la notice de chaque imprimeur à partir de l'`id` de type `cnp` contenu dans le jeu précédent
+On récupère au moyen d'un script python, `compute_cerl-imprim-paris-enrich.py` les données intéressantes dans la notice de chaque imprimeur à partir de l'`id` de type `cnp` contenu dans le jeu précédent.
 
 La récupération de chaque notice se fait par une requête de type `https://data.cerl.org/thesaurus/cnp01118364?format=json&pretty` tous les ark, qui peuvent être précédés soit d'une adresse data BNF soit d'une adresse catalogue BNF (donc ne prendre que la fin)
 
