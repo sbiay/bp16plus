@@ -79,17 +79,13 @@ Intégré au projet sous le nom `bp16-export-primaire`.
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Nettoyage du jeu primaire</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">Dates</span>
-Je dois formaliser dates format iso (autant que possible) -> 
-1. ?date => date de page de titre ISO  : les données ont été mises en formes selon la norme ISO 8601
-2. ?date => date1 : date analysée à reprendre
+Les dates ont été traitées à partir de la donnée brute renseignée sous l'attribut **date complète**. Le champ **date ISO** résulte de la transformation de ces données selon la norme ISO-8601 et validées par un *pattern* que nous avons implémenté : yyyy-mm-dd.
+
+Cas particuliers :
+- Lorsque la **date complète** contient une information issue d'une analyse (elle figure entre crochets), c'est cette dernière valeur qui a été retenu pour renseigner l'attribut **date ISO**.
+- Lorsque la **date complète** décrit un intervalle, la limite basse a été renseignée selon le même format que **date ISO** sous l'attribut **date ISO jusqu'à**
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Enrichissements du jeu primaire</span>
-## <span style="color : rgb(020, 080, 170, 0.8)">Nationalité des auteurs</span>
-Source de la donnée : Data-BNF.
-
-Problèmes :
-- Les auteurs de l'Antiquité comme Augustin n'ont pas de nationalité ; en revanche ils ont des dates, or tous les auteurs antérieurs à une date déterminée peuvent être considérés comme des auteurs antiques indépendamment de leur nationalité.
-
 ## <span style="color : rgb(020, 080, 170, 0.8)">Langue des ouvrages</span>
 Il s'agit de récupérer les langues des **expressions** dont BP16 contient les **manifestations**.
 
@@ -164,15 +160,4 @@ Les données nécessaires sont contenues sous les clés :
 - `id` : identifiant CERL ;
 - `extDataset` : s'y trouvent les liens data-BNF indispensables pour joindre des données à notre jeu principal ;
 - `place` : informations de localisation des activités des imprimeurs.
-
-# <span style="color : rgb(015, 005, 230, 0.8)">Mise en place du travail de groupe</span>
-Nous avons besoin :
-- D'un calendrier précisant les créneaux de travail à s'approprier ;
-- D'un dépôt partagé pour le stockage de l'archive zip du projet ;
-- D'un nom pour le projet :
-    - bp16plus ?
-- D'un plan de nommage ou de sauvegarde des archives zip.
-- Un dépôt Github où chacun documente son travail dans une branche ? Permettrait aussi de rédiger la doc du devoir.
-
-Reprendre les notes du framapad : https://annuel2.framapad.org/p/bp16pluspad-9svq?lang=fr
 
