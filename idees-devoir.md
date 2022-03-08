@@ -80,8 +80,8 @@ Intégré au projet sous le nom `bp16-export-primaire`.
 # <span style="color : rgb(015, 005, 230, 0.8)">Nettoyage du jeu primaire</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">Dates</span>
 Je dois formaliser dates format iso (autant que possible) -> 
-1. date de page de titre 
-2. date analysée (deux colonnes).
+1. ?date => date de page de titre ISO  : les données ont été mises en formes selon la norme ISO 8601
+2. ?date => date1 : date analysée à reprendre
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Enrichissements du jeu primaire</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">Nationalité des auteurs</span>
@@ -103,6 +103,9 @@ Il s'agit de récupérer les langues des **expressions** dont BP16 contient les 
     ?uriexpression <http://purl.org/dc/terms/language> ?langue.
     } LIMIT 1
     ```
+    Le résultat est dans le jeu `bp16-langExp`.
+
+3. Traduire les URI ISO des langues en donnée parlante : résultat dans le jeu `bp16-langNorm`.
 
 ## <span style="color : rgb(020, 080, 170, 0.8)">Adresses bibliographiques</span>
 Source à mobiliser : CERL. Les notices du CERL les plus pertinentes sont de type `cnp` (Personnes) : plus riches en information, elles renseignent notamment le type d'activité.
