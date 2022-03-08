@@ -51,10 +51,12 @@ WHERE {<''' + uriDataManif + '''> <http://rdvocab.info/RDARelationshipsWEMI/expr
     # On remplit la valeur du nouvel attribut pour l'enregistrement courant
     nouveauSet['langueExpressionISO'].append(donnee)
 
+    """
     # Pour tester le code sur une portion limitée des enregistrements
     i += 1
     if i > 50:
         break
+    """
 
 # -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
 # On imprime en test le nombre de valeur pour chaque attribut (il doit absolument être identique partout)
