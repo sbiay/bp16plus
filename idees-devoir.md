@@ -10,13 +10,15 @@ Plan :
 	1. Nationalité des auteurs
 	2. Langue des ouvrages
 	3. Adresses bibliographiques
-4. Jeux de données complémentaires
+4. Nettoyage du jeu primaire
+	1. Dates
+5. Jeux de données complémentaires
 	1. cerl-imprim-paris
 		1. Caractéristiques générales
 		2. Traitements
 			1. Ciblage des résultats pertinents
 			2. Récupération des données issues des notices
-5. Mise en place du travail de groupe
+6. Mise en place du travail de groupe
 
 ***
 
@@ -75,7 +77,13 @@ Le résultat de la requête précédente est contenu dans le fichier `./donnees/
 
 Intégré au projet sous le nom `bp16-export-primaire`.
 
-# <span style="color : rgb(015, 005, 230, 0.8)">Enrichissements possibles</span>
+# <span style="color : rgb(015, 005, 230, 0.8)">Nettoyage du jeu primaire</span>
+## <span style="color : rgb(020, 080, 170, 0.8)">Dates</span>
+Je dois formaliser dates format iso (autant que possible) -> 
+1. date de page de titre 
+2. date analysée (deux colonnes).
+
+# <span style="color : rgb(015, 005, 230, 0.8)">Enrichissements du jeu primaire</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">Nationalité des auteurs</span>
 Source de la donnée : Data-BNF.
 
@@ -83,9 +91,18 @@ Problèmes :
 - Les auteurs de l'Antiquité comme Augustin n'ont pas de nationalité ; en revanche ils ont des dates, or tous les auteurs antérieurs à une date déterminée peuvent être considérés comme des auteurs antiques indépendamment de leur nationalité.
 
 ## <span style="color : rgb(020, 080, 170, 0.8)">Langue des ouvrages</span>
-Généralement pas de lien vers des notices oeuvres Data-BNF =(
+Il s'agit de récupérer les langues des **expressions** dont BP16 contient les **manifestations**.
 
-**Relancer la recherche**.
+1. Récupérer l'URI DataBNF de l'expression à partir de son URI BP16
+
+2. Requêter l'URI de l'expression au moyen d'une requête Sparql sur DataBNF afin de requêter la langue de cette expression :
+    ```sparql
+    SELECT DISTINCT ?langue
+    WHERE {
+    <http://data.bnf.fr/ark:/12148/cb418775742#about> <http://rdvocab.info/RDARelationshipsWEMI/expressionManifested> ?uriexpression.
+    ?uriexpression <http://purl.org/dc/terms/language> ?langue.
+    } LIMIT 1
+    ```
 
 ## <span style="color : rgb(020, 080, 170, 0.8)">Adresses bibliographiques</span>
 Source à mobiliser : CERL. Les notices du CERL les plus pertinentes sont de type `cnp` (Personnes) : plus riches en information, elles renseignent notamment le type d'activité.
@@ -112,6 +129,7 @@ Méthode :
             - coordinate location
     2. Croiser avec les données de `denominations-emprises-voies-actuelles.json` (données de Paris Data) :
         - Développer le script `voirie.py`
+
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Jeux de données complémentaires</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">cerl-imprim-paris</span>
@@ -154,3 +172,4 @@ Nous avons besoin :
 - Un dépôt Github où chacun documente son travail dans une branche ? Permettrait aussi de rédiger la doc du devoir.
 
 Reprendre les notes du framapad : https://annuel2.framapad.org/p/bp16pluspad-9svq?lang=fr
+
