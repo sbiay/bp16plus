@@ -6,24 +6,25 @@ Plan :
 	1. La sélection des données
 	2. La requête Sparql
 	3. Données récoltées
-3. Enrichissements possibles
-	1. Nationalité des auteurs
-	2. Langue des ouvrages
-	3. Adresses bibliographiques
-4. Nettoyage du jeu primaire
+3. Nettoyage du jeu primaire
 	1. Dates
+4. Enrichissements du jeu primaire
+	1. Langue des ouvrages
+	2. Adresses bibliographiques
 5. Jeux de données complémentaires
 	1. cerl-imprim-paris
 		1. Caractéristiques générales
 		2. Traitements
 			1. Ciblage des résultats pertinents
 			2. Récupération des données issues des notices
-6. Mise en place du travail de groupe
+			3. Nettoyage des données relatives aux adresses bibliographiques
+	2. wikidata-rues-paris
+		1. Méthode d'acquisition détaillée
 
 ***
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Objectifs</span>
-L'idée générale serait de partir d'un jeu de données renseignant les éditions avec leurs exemplaires, leurs auteurs, leurs libraires (chaque édition possède donc des doublons lorsqu'elle a plusieurs auteurs, plusieurs libraires ou plusieurs exemplaires) afin de procéder à des enrichissements sur :
+L'idée générale est de partir d'un jeu de données renseignant les éditions avec leurs exemplaires, leurs auteurs, leurs libraires (chaque édition possède donc des doublons lorsqu'elle a plusieurs auteurs, plusieurs libraires ou plusieurs exemplaires) afin de procéder à des enrichissements sur :
 1. Les exemplaires : enrichir leur localisation (actuellement une chaîne de caractères) ;
 2. Les auteurs ou les éditeurs, qui ne sont renseignés dans BP16 que sous forme de données liées de DataBNF ; il s'agirait donc de rapatrier des données explicites (noms, dates, lieu de naissance par exemple) ;
 3. Les imprimeurs-libraires (idem).
@@ -75,7 +76,7 @@ WHERE {
 ## <span style="color : rgb(020, 080, 170, 0.8)">Données récoltées</span>
 Le résultat de la requête précédente est contenu dans le fichier `./donnees/bp16-manifestation-items-1.csv`.
 
-Intégré au projet sous le nom `bp16-export-primaire`.
+Il est intégré au projet sous le nom `bp16-export-primaire`.
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Nettoyage du jeu primaire</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">Dates</span>
@@ -87,11 +88,11 @@ Cas particuliers :
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Enrichissements du jeu primaire</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">Langue des ouvrages</span>
-Il s'agit de récupérer les langues des **expressions** dont BP16 contient les **manifestations**.
+On a récupéré les langues des **expressions** dont BP16 contient les **manifestations**.
 
-1. Récupérer l'URI DataBNF de l'expression à partir de son URI BP16
+1. On a d'abord récupéré l'URI DataBNF de l'expression à partir de son URI BP16
 
-2. Requêter l'URI de l'expression au moyen d'une requête Sparql sur DataBNF afin de requêter la langue de cette expression :
+2. Puis requêté l'URI de l'expression au moyen d'une requête Sparql sur DataBNF afin de requêter la langue de cette expression :
     ```sparql
     SELECT DISTINCT ?langue
     WHERE {
@@ -101,10 +102,9 @@ Il s'agit de récupérer les langues des **expressions** dont BP16 contient les 
     ```
     Le résultat est dans le jeu `bp16-langExp`.
 
-3. Traduire les URI ISO des langues en donnée parlante : résultat dans le jeu `bp16-langNorm`.
+3. Traduit enfin les URI ISO des langues en donnée parlante : résultat dans le jeu `bp16-langNorm`.
 
 ## <span style="color : rgb(020, 080, 170, 0.8)">Adresses bibliographiques</span>
-Source à mobiliser : CERL. Les notices du CERL les plus pertinentes sont de type `cnp` (Personnes) : plus riches en information, elles renseignent notamment le type d'activité.
 
 Les notices contiennent le référent ark de la BNF.
 
@@ -132,12 +132,11 @@ Méthode :
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Jeux de données complémentaires</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">cerl-imprim-paris</span>
-
 ### <span style="color : rgb(000, 200, 100, 0.7)">Caractéristiques générales</span>
-- Nom complet : cerl-imprim-paris
-- Définition : export de toutes les personnes de CERL répondant à "imprimeur" et "Paris" (4557) :
-
-- Méthode d'acquisition : liste des requêtes pour chaque 100 résultats dans `./requetes/cerl-imprim-paris.text`.
+- Source mobilisée : [CERL Thesaurus](https://data.cerl.org/thesaurus/_search).
+- Nom du jeu : `cerl-imprim-paris`
+- Définition : export de toutes les **personnes** de CERL répondant à "imprimeur" et "Paris" (4557). Les notices du CERL les plus pertinentes sont en effet de type `cnp` ("personnes") : plus riches en information, elles renseignent notamment le type d'activité.
+- Méthode d'acquisition : liste des requêtes pour chaque 100 résultats dans `./requetes/cerl-imprim-paris.text`. 
 - Exemples de requête : 
     - https://data.cerl.org/thesaurus/_search?query=(imprimeur%20paris)%20AND%20type%3Acnp&size=100&mode=default&format=json&from=1
     - https://data.cerl.org/thesaurus/_search?query=(imprimeur%20paris)%20AND%20type%3Acnp&size=100&mode=default&format=json&from=101
@@ -150,14 +149,61 @@ On élimine la majorité des lignes non pertinentes en appliquant un *filter* su
 On obtient le set `cerl-imprim-paris_filtered` (env. 1000 lignes au lieu de 4500).
 
 #### <span style="color : rgb(050, 100, 060, 0.7)">Récupération des données issues des notices</span>
-On récupère au moyen d'un script python, `compute_cerl-imprim-paris-enrich.py` les données intéressantes dans la notice de chaque imprimeur à partir de l'`id` de type `cnp` contenu dans le jeu précédent.
+On récupère au moyen d'un script python (`compute_cerl-imprim-paris-enrich.py`) les données intéressantes dans la notice de chaque imprimeur à partir de l'`id` de type `cnp` contenu dans le jeu précédent.
 
-La récupération de chaque notice se fait par une requête de type `https://data.cerl.org/thesaurus/cnp01118364?format=json&pretty` tous les ark, qui peuvent être précédés soit d'une adresse data BNF soit d'une adresse catalogue BNF (donc ne prendre que la fin)
+La récupération de chaque notice se fait par une requête de type `https://data.cerl.org/thesaurus/cnp01118364?format=json&pretty`. On parse le contenu de chaque Json pour récupérer le numéro ark (qui peut être précédé soit d'une adresse data.bnf.fr soit d'une adresse catalogue.bnf.fr.
 
-- Problème : chaque notice serait convertie en un tableau à 950 colonnes si elle était importée telle quelle dans Dataiku. On procède donc à un parsage des données au moyen du script pour ne récupérer que celles répondant à certains conditions restreintes.
+Chaque notice peut comporter jusqu'à 950 attributs. On procède donc à un parsage des données au moyen du script pour ne récupérer que celles répondant à certains conditions restreintes.
 
 Les données nécessaires sont contenues sous les clés :
 - `id` : identifiant CERL ;
-- `extDataset` : s'y trouvent les liens data-BNF indispensables pour joindre des données à notre jeu principal ;
+- `extDataset` : s'y trouvent les liens vers les ressources de la BNF contenant les numéros ark indispensables pour joindre les données à notre jeu principal ;
 - `place` : informations de localisation des activités des imprimeurs.
 
+On obtient le jeu `cerl-imprim-paris-enrich`.
+
+#### <span style="color : rgb(050, 100, 060, 0.7)">Nettoyage des données relatives aux adresses bibliographiques</span>
+A partir du jeu obtenu, on effectue un ensemble de traitements à base d'expressions régulières, pour générer une colonne "adresse simplifiée".
+
+On obtient le jeu `cerl-imprim-paris-rues`.
+
+## <span style="color : rgb(020, 080, 170, 0.8)">wikidata-rues-paris</span>
+- Source mobilisée : Wikidata.
+- Nom du jeu : `wikidata-rues-paris`
+- Définition : export de données liées répondant à la description `"street in Paris, France"@en`, plus riche que son homologue francophone.
+- Méthode d'acquisition : on récupère de Wikidata une liste des noms des rues de Paris avec leurs coordonnées en passant deux requêtes HTTP successives exprimant deux requêtes Sparql.
+
+### Jeu de données concurrent écarté
+Nous avons examiné le jeu de données [Dénominations des emprises des voies actuelles](https://opendata.paris.fr/explore/dataset/denominations-emprises-voies-actuelles/export/?disjunctive.siecle&disjunctive.statut&disjunctive.typvoie&disjunctive.arrdt&disjunctive.quartier&disjunctive.feuille&sort=historique) disponible sur opendata.paris.fr.
+
+Les informations relatives aux anciens noms de rues y sont contenues dans un champ "historique" touffu dont il n'a pas été possible d'extraire de façon satisfaisante les seuls noms des rues.
+
+### Méthode d'acquisition détaillée
+1. Avec le nom principal de l'entité :
+    ```sparql
+    SELECT ?entite ?nom ?coordonnees
+    WHERE {
+        ?entite schema:description "street in Paris, France"@en.
+        ?entite rdfs:label ?nom.
+        ?entite p:P625 ?proprieteLoc.
+        ?proprieteLoc ps:P625 ?coordonnees.
+    }
+    ```
+2. Avec les noms autres :
+    ```sparql
+    SELECT ?entite ?nom ?coordonnees
+    WHERE {
+        ?entite schema:description "street in Paris, France"@en.
+        ?entite skos:altLabel ?nom.
+        ?entite p:P625 ?proprieteLoc.
+        ?proprieteLoc ps:P625 ?coordonnees.
+    }
+    ```
+Requêtes HTTP :
+- https://query.wikidata.org/sparql?format=json&query=SELECT%20%3Fentite%20%3Fnom%20%3Fcoordonnees%0A%20%20%20%20WHERE%20%7B%0A%20%20%20%20%20%20%20%20%3Fentite%20schema%3Adescription%20%22street%20in%20Paris%2C%20France%22%40en.%0A%20%20%20%20%20%20%20%20%3Fentite%20rdfs%3Alabel%20%3Fnom.%0A%20%20%20%20%20%20%20%20%3Fentite%20p%3AP625%20%3FproprieteLoc.%0A%20%20%20%20%20%20%20%20%3FproprieteLoc%20ps%3AP625%20%3Fcoordonnees.%0A%20%20%20%20%7D
+- https://query.wikidata.org/sparql?format=json&query=SELECT%20%3Fentite%20%3Fnom%20%3Fcoordonnees%0A%20%20%20%20WHERE%20%7B%0A%20%20%20%20%20%20%20%20%3Fentite%20schema%3Adescription%20%22street%20in%20Paris%2C%20France%22%40en.%0A%20%20%20%20%20%20%20%20%3Fentite%20skos%3AaltLabel%20%3Fnom.%0A%20%20%20%20%20%20%20%20%3Fentite%20p%3AP625%20%3FproprieteLoc.%0A%20%20%20%20%20%20%20%20%3FproprieteLoc%20ps%3AP625%20%3Fcoordonnees.%0A%20%20%20%20%7D
+
+Puis on nettoie les valeurs avec une recette d'expression régulières et on ne garde que les labels français.
+
+### Bilan de la réunion avec le jeu de données principal
+De nombreuses adresses bibliographiques n'ont pas trouvé de correspondance suite à la jointure de ces données avec celles issues du CERL. Mais il était intéressant d'effectuer cet enrichissement, bien que la complétude des données soit limitée.
