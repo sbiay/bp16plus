@@ -129,6 +129,21 @@ Méthode :
     2. Croiser avec les données de `denominations-emprises-voies-actuelles.json` (données de Paris Data) :
         - Développer le script `voirie.py`
 
+## Coordonnées géographiques des bibliothèques conservant les exemplaires
+L'URI Wikidata et les coordonnées géo à partir d'un nom de ville et d'un nom d'institution :
+```sparql
+SELECT DISTINCT ?entiteInstitution ?coordonnees
+WHERE {
+  ?entiteInstitution rdfs:label ?nomInstitution.
+  ?entiteInstitution wdt:P131 ?entiteLieu.
+  ?entiteLieu wdt:P1705 ?nomLieu.
+  ?entiteInstitution p:P625 ?proprieteLoc.
+  ?proprieteLoc ps:P625 ?coordonnees.
+  filter contains(?nomLieu, "Bordeaux")
+  filter contains(lcase(?nomInstitution), "bibliothèque municipale")
+}
+LIMIT 1
+```
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Jeux de données complémentaires</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">cerl-imprim-paris</span>
