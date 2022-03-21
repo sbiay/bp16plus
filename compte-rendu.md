@@ -132,6 +132,10 @@ Méthode :
 ## Coordonnées géographiques des bibliothèques conservant les exemplaires
 L'URI Wikidata et les coordonnées géo à partir d'un nom de ville et d'un nom d'institution :
 ```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
 SELECT DISTINCT ?entiteInstitution ?coordonnees
 WHERE {
   ?entiteInstitution rdfs:label ?nomInstitution.
@@ -139,11 +143,16 @@ WHERE {
   ?entiteLieu wdt:P1705 ?nomLieu.
   ?entiteInstitution p:P625 ?proprieteLoc.
   ?proprieteLoc ps:P625 ?coordonnees.
-  filter contains(?nomLieu, "Bordeaux")
+  filter contains(?nomLieu, "Besançon")
   filter contains(lcase(?nomInstitution), "bibliothèque municipale")
 }
 LIMIT 1
 ```
+
+Pour effectuer le script python `compute_bp16-loc-enrich.py` :
+- Penser à transformer "Bibliothèque nationale de France. Département etc." en "Bibliothèque nationale de France" ;
+- Pas la peine de transformer les noms d'institutions en bas de casse : le script python le gère
+- Très lent
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Jeux de données complémentaires</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">cerl-imprim-paris</span>
