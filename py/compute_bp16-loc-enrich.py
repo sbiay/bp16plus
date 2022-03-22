@@ -3,6 +3,8 @@
 import dataiku
 import pandas as pd, numpy as np
 from dataiku import pandasutils as pdu
+import time
+from time import sleep
 import urllib.parse
 import requests
 import json
@@ -30,13 +32,28 @@ for enregistrement in bp16_loc_net_prepared.iter_rows():
     dataVille = enregistrement['Pays item']
     nomInstitution = enregistrement['Institution conservation item']
 
-    # On teste si le nom de la ville est déjà dans le journal des résultats
+    # On cherche le nom de la ville et de l'institution dans le journal des résultats
     if resultats.get(f"{dataVille}, {nomInstitution}"):
         nouveauSet['Coord'].append(resultats[f"{dataVille}, {nomInstitution}"])
+        print(f"Journal utilisé pour {i} : valeur {resultats[f'{dataVille}, {nomInstitution}']}")
 
+    # Si le nom de la ville et de l'institution ne sont pas déjà dans le journal des résultats
     else:
         # On effectue la recherche sur le nom de l'institution en bas de casse
         nomInstitutionLow = nomInstitution.lower()
+        # On découpe le nom de l'institution en mots-clés
+        motscles = nomInstitutionLow.split()
+        # On écrit les filtres de la requête sparql
+        listeFiltres = [f'filter contains(lcase(?nomInstitution), "{mot}").' for mot in motscles]
+        # On écrit la liste dans une chaîne de caractères pour pouvoir l'ajouter à la requête
+        chaineFiltres = ""
+        for index, filtre in enumerate(listeFiltres):
+            # On n'ajoutera pas de saut de ligne pour le dernier filtre de la liste
+            if index == len(listeFiltres) - 1:
+                chaineFiltres += "\n" + filtre
+            else:
+                chaineFiltres += filtre
+
         queryString = '''PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n
         PREFIX p: <http://www.wikidata.org/prop/>\n
@@ -49,33 +66,41 @@ for enregistrement in bp16_loc_net_prepared.iter_rows():
           ?entiteInstitution p:P625 ?proprieteLoc.\n
           ?proprieteLoc ps:P625 ?coordonnees.\n
           filter contains(?nomLieu, "''' + dataVille + '''")\n
-          filter contains(lcase(?nomInstitution), "''' + nomInstitutionLow + '''")\n
+          ''' + chaineFiltres +'''
         }\n
         LIMIT 1'''
         requHTTP = requests.get("https://query.wikidata.org/sparql?format=json&query=" + urllib.parse.quote(queryString))
-        try:
-            resultat = requHTTP.json()
-            # S'il y a un résultat
-            if len(resultat["results"]["bindings"])>= 1:
-                donneeCoord = resultat["results"]["bindings"][0]["coordonnees"]["value"]
-                nouveauSet['Coord'].append(donneeCoord)
-                # On inscrit le résultat dans le journal des résultats
-                resultats[f"{dataVille}, {nomInstitution}"] = donneeCoord
 
-        except json.decoder.JSONDecodeError:
-            print(f"There was a problem accessing the equipment data on {enregistrement['Pays item']}.")
+        if requHTTP.status_code == 200:
+            try:
+                resultat = requHTTP.json()
+                # S'il y a un résultat
+                if len(resultat["results"]["bindings"])>= 1:
+                    donneeCoord = resultat["results"]["bindings"][0]["coordonnees"]["value"]
+                    nouveauSet['Coord'].append(donneeCoord)
+                    # On inscrit le résultat dans le journal des résultats
+                    resultats[f"{dataVille}, {nomInstitution}"] = donneeCoord
+
+                else:
+                    resultats[f"{dataVille}, {nomInstitution}"] = "NULL"
+
+            except json.decoder.JSONDecodeError:
+                print(f"There was a problem accessing the equipment data on {enregistrement['Pays item']}.")
+
     for cle in nouveauSet:
         if len(nouveauSet[cle]) == i:
-            nouveauSet[cle].append("")
+            nouveauSet[cle].append("NULL")
 
     i +=1
-
+    """
     # Pour tester le code sur une portion limitée des enregistrements
-    if i > 15:
+    if i > 10:
         break
+
 # Pour afficher les résultats de l'enrichissement
 for index, enregistrement in enumerate(nouveauSet['Id BP16']):
     print(f"{index}. {nouveauSet['Id BP16'][index]} - ville : {nouveauSet['Pays item'][index]} - coordonnées : {nouveauSet['Coord'][index]}")
+    """
 
 # -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
 # Pour pallier une partie des erreurs de lecture des fichiers Json, on finit par une boucle sur le journal des résultats
@@ -88,24 +113,27 @@ for enregistrement in bp16_loc_net_prepared.iter_rows():
     # On teste si les coordonnées de l'enregistrement sont vides et si elles existent dans le journal des résultats
     if not nouveauSet['Coord'] and resultats.get(f"{dataVille}, {nomInstitution}"):
         nouveauSet['Coord'].append(resultats[f"{dataVille}, {nomInstitution}"])
-    
+
     for cle in nouveauSet:
         if len(nouveauSet[cle]) == i:
-            nouveauSet[cle].append("")
+            nouveauSet[cle].append("NULL")
 
     i +=1
 
+    """
     # Pour tester le code sur une portion limitée des enregistrements
-    if i > 15:
+    if i > 10:
         break
+    """
 
 # -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
-print(resultats)
+"""print(resultats)
 for attribut in nouveauSet:
     print(attribut + ": " + str(len(nouveauSet[attribut])))
+"""
 
 # -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
 # Write recipe outputs
 bp16_loc_enrich_df = pd.DataFrame(nouveauSet)
-bp16_loc_enrich = dataiku.Dataset("bp16-loc-enrich")
+bp16_loc_enrich = dataiku.Dataset("bp16_loc_enrich")
 bp16_loc_enrich.write_with_schema(bp16_loc_enrich_df)

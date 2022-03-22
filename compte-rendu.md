@@ -143,8 +143,9 @@ WHERE {
   ?entiteLieu wdt:P1705 ?nomLieu.
   ?entiteInstitution p:P625 ?proprieteLoc.
   ?proprieteLoc ps:P625 ?coordonnees.
-  filter contains(?nomLieu, "Besançon")
-  filter contains(lcase(?nomInstitution), "bibliothèque municipale")
+  filter contains(?nomLieu, "London")
+  filter contains(lcase(?nomInstitution), "british")
+  filter contains(lcase(?nomInstitution), "library")
 }
 LIMIT 1
 ```
@@ -152,7 +153,7 @@ LIMIT 1
 Pour effectuer le script python `compute_bp16-loc-enrich.py` :
 - Penser à transformer "Bibliothèque nationale de France. Département etc." en "Bibliothèque nationale de France" ;
 - Pas la peine de transformer les noms d'institutions en bas de casse : le script python le gère
-- Très lent
+- Très lent : 19 sec pour British Library, 31 sec. pour Mazarine
 
 # <span style="color : rgb(015, 005, 230, 0.8)">Jeux de données complémentaires</span>
 ## <span style="color : rgb(020, 080, 170, 0.8)">cerl-imprim-paris</span>
