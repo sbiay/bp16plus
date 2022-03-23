@@ -58,6 +58,8 @@ Avec ces deux étapes, quelques informations comme la précision qu'une biblioth
 import dataiku
 import pandas as pd, numpy as np
 from dataiku import pandasutils as pdu
+import time
+from time import sleep
 import urllib.parse
 import requests
 import json
@@ -107,18 +109,21 @@ for enregistrement in bp16_loc_net_prepared.iter_rows():
           filter contains(lcase(?nomInstitution), "''' + nomInstitutionLow + '''")\n
         }\n
         LIMIT 1'''
-        requHTTP = requests.get("https://query.wikidata.org/sparql?format=json&query=" + urllib.parse.quote(queryString))
-        try:
-            resultat = requHTTP.json()
-            # S'il y a un résultat
-            if len(resultat["results"]["bindings"])>= 1:
-                donneeCoord = resultat["results"]["bindings"][0]["coordonnees"]["value"]
-                nouveauSet['Coord'].append(donneeCoord)
-                # On inscrit le résultat dans le journal des résultats
-                resultats[f"{dataVille}, {nomInstitution}"] = donneeCoord
+        requHTTP = requests.get("https://query.wikidata.org/sparql?format=json&query=" + urllib.parse.quote(queryString), sleep(3))
+        
+        if requHTTP.status_code == 200:
+            try:
+                resultat = requHTTP.json()
+                # S'il y a un résultat
+                if len(resultat["results"]["bindings"])>= 1:
+                    donneeCoord = resultat["results"]["bindings"][0]["coordonnees"]["value"]
+                    nouveauSet['Coord'].append(donneeCoord)
+                    # On inscrit le résultat dans le journal des résultats
+                    resultats[f"{dataVille}, {nomInstitution}"] = donneeCoord
 
-        except json.decoder.JSONDecodeError:
-            print(f"There was a problem accessing the equipment data on {enregistrement['Pays item']}.")
+            except json.decoder.JSONDecodeError:
+                print(f"There was a problem accessing the equipment data on {enregistrement['Pays item']}.")
+    
     for cle in nouveauSet:
         if len(nouveauSet[cle]) == i:
             nouveauSet[cle].append("")
@@ -172,3 +177,15 @@ bp16_loc_enrich_df = pd.DataFrame(nouveauSet)
 bp16_loc_enrich = dataiku.Dataset("bp16-loc-enrich")
 bp16_loc_enrich.write_with_schema(bp16_loc_enrich_df)
 ```
+
+
+
+
+## Visualisations
+
+**Sébastien**:
+- https://public.tableau.com/app/profile/s.bastien.biay/viz/BP16plusCarteimprimeurs-libraires/Feuille2
+- https://public.tableau.com/app/profile/s.bastien.biay/viz/BP16plusLangueoeuvres/Feuille1
+
+**Zoé**:
+- https://public.tableau.com/app/profile/zcappe/viz/BP16ImprimeursLibraires/Feuille3?publish=yes
