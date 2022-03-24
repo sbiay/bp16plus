@@ -157,7 +157,7 @@ Après obtention des résultats, on a nettoyé les valeurs avec une recette d'ex
 De nombreuses adresses bibliographiques n'ont pas trouvé de correspondance suite à la jointure de ces données avec celles issues du CERL. Les anciens noms des rues de Paris sont peu renseignés dans les entités de Wikidata, et nettoyer parfaitement les adresses bibliographiques issues du Thesaurus CERL aurait demandé un effort considérable. Mais il était intéressant d'effectuer cet enrichissement, bien que la complétude des données soit limitée.
 
 ## Les coordonnées géographiques des bibliothèques conservant les exemplaires
-Après le nettoyage des données relatives aux lieux de conservation des exemplaires, nous avons procédé pour chacun, via le script python `compute_bp16_loc_enrich` à la recherche des coordonnées géographiques de ces lieux sur Wikidata. Voici un exemple de requête sparql :
+Après le nettoyage des données relatives aux lieux de conservation des exemplaires, nous avons procédé pour chacun, via un script python à la recherche des coordonnées géographiques de ces lieux sur Wikidata. Voici un exemple de requête sparql :
 ```sql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
@@ -176,6 +176,8 @@ WHERE {
 }
 LIMIT 1
 ```
+
+En raison de la longueur du traitement pour chaque institution distincte, le serveur de Dataiku a refusé d'effectuer ce travail jusqu'au bout. Nous avons par conséquent effectué ce travail en dehors de Dataiku au moyen de [ce script python](py/enrich-loc.py), puis intégré le fichier CSV des résultats au projet sous le nom `lieux_conservation_enrich-plus`.
 
 # Visualisations
 ## Langues des éditions
