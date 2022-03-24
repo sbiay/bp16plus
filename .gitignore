@@ -1,0 +1,5 @@
+venv/*
+dataiku-lancer.md
+archive/
+.idea/
+*pdf
