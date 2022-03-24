@@ -113,7 +113,7 @@ A partir du jeu obtenu, on a effectué un ensemble de traitements à base d'expr
 
 On a obtenu le jeu `cerl-imprim-paris-rues`.
 
-## Consitution du jeu secondaire wikidata-rues-paris
+## Constitution du jeu secondaire wikidata-rues-paris
 Il fallait ensuite croiser les noms de rues nettoyé avec une source fournissant des informations de géolocalisation.
 
 - Source mobilisée : Wikidata.
