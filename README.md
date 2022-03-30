@@ -7,7 +7,7 @@ A partir du dump BP16, nous avons constitué un jeu de données relatifs aux éd
 2. Les auteurs : rapatrier des données biographiques (nom et dates) à partir de data.bnf.fr ;
 3. Les imprimeurs-libraires : rapatrier des données biographiques et leurs adresses d'activité à partir du [CERL Thesaurus](https://data.cerl.org/thesaurus/_search).
 
-# <span style="color : rgb(015, 005, 230, 0.8)">Recrutement du corpus de départ
+# Recrutement du corpus de départ
 ## La sélection des données du dump BP16
 Nous avons monté le dump BP16 dans une base en graphe et recherché par une requête Sparql les attributs suivants :
 - `?uriManif` : l'URI de chaque édition ("manifestation" en modèle FRBF) 
@@ -54,7 +54,7 @@ WHERE {
 ## Données récoltées
 Le résultat de la requête a été intégré au projet sous le nom `bp16-export-primaire`.
 
-# <span style="color : rgb(015, 005, 230, 0.8)">Nettoyage du jeu primaire
+# Nettoyage du jeu primaire
 ## Dates
 Les dates ont été traitées à partir de la donnée brute renseignée sous l'attribut **Date publication complète**. Les champs **Date publication ISO** résultent de la transformation de ces données selon la norme ISO-8601.
 
@@ -62,7 +62,7 @@ Cas particuliers :
 - Lorsque la **Date publication complète** contient une information issue d'une analyse (elle figure entre crochets), c'est cette dernière valeur qui a été retenu pour renseigner l'attribut **date ISO**.
 - Lorsque la **Date publication complète** décrit un intervalle, la limite basse a été renseignée selon le même format que **date ISO** sous l'attribut **Date publication ISO jusqua**
 
-# <span style="color : rgb(015, 005, 230, 0.8)">Enrichissements
+# Enrichissements
 ## La langue des ouvrages
 On a récupéré les langues des **expressions** dont le dump BP16 contient les **manifestations** (modèle FRBR).
 
@@ -177,7 +177,7 @@ WHERE {
 LIMIT 1
 ```
 
-En raison de la longueur du traitement pour chaque institution distincte, le serveur de Dataiku a refusé d'effectuer ce travail jusqu'au bout. Nous avons par conséquent effectué ce travail en dehors de Dataiku au moyen de [ce script python](py/enrich-loc.py), puis intégré le fichier CSV des résultats au projet sous le nom `lieux_conservation_enrich-plus`.
+En raison de la longueur du traitement pour chaque institution distincte, le serveur de Dataiku a refusé d'effectuer ce travail jusqu'au bout. Nous avons par conséquent effectué ce travail en dehors de Dataiku au moyen de [ce script python](py/enrich-loc.py), puis intégré le fichier CSV des résultats au projet sous le nom `lieux_conservation_enrichComplet`.
 
 # Visualisations
 ## Langues des éditions
