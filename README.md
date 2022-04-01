@@ -179,6 +179,35 @@ LIMIT 1
 
 En raison de la longueur du traitement pour chaque institution distincte, le serveur de Dataiku a refusé d'effectuer ce travail jusqu'au bout. Nous avons par conséquent effectué ce travail en dehors de Dataiku au moyen de [ce script python](py/enrich-loc.py), puis intégré le fichier CSV des résultats au projet sous le nom `lieux_conservation_enrichComplet`.
 
+## Identification des auteurs des oeuvres
+### Noms et prénoms, date de naissance et de mort
+Afin de récupérer les noms et prénoms, dates de naissance et de mort des **auteurs**, nous avons procédé à différentes étapes, en nous basant sur le script python précédemment réalisé pour récupérer les **langues** des oeuvres.
+
+1. On a d'abord récupéré l'URI DataBNF de l'expression à partir de son URI auteur ;
+
+2. Puis requêté l'URI au moyen d'une requête sparql sur DataBNF afin de requêter le nom, prénom, nom complet s'il existe, date de naissance et de mort de cette expression ; on a procédé à ces requêtes au moyen du [script python](py/dates-auteurs) visible dans la recette `compute_bp16-nomsAuteurs` qui a effectué pour chaque ligne une requête du type :
+    ```sql
+    SELECT DISTINCT ?nom ?nomComplet ?naissance ?mort
+         WHERE {
+         <''' + uriDataAuteur + '''> <http://xmlns.com/foaf/0.1/familyName> ?nom.
+         <''' + uriDataAuteur + '''> <http://xmlns.com/foaf/0.1/name> ?nomComplet.
+         <''' + uriDataAuteur + '''> <http://vocab.org/bio/0.1/birth> ?naissance.
+         <''' + uriDataAuteur + '''> <http://vocab.org/bio/0.1/death> ?mort
+         } LIMIT 1
+    ```
+    Le résultat est dans le jeu `bp16-nomsAuteurs`.
+    
+### Nettoyage des données
+Un travail de normalisation sous forme ISO des dates récupérées était essentiel. En effet ces dernières se présentaient sous des formes variées, allant de 2 à 8 chiffres, certaines affichant des jours et mois particuliers (ex: 1469-02-20) , d'autres (notamment pour les auteurs fictifs) présentaient des données incomplètes signalées par des points de ponctuation (ex: 14..). Une petite dizaine de dates présentaient un tiret (ex: -0100-07-12) renseigné pour les auteurs antiques d'avant JC. Pour finir, les auteurs non renseignés pour certaines oeuvres renvoyaient NULL concernant leur dates.
+1. De nombreuses Regex (ex: ^(\d\d)(\.\.)$ -> $100-01-01) ont été utilisées pour rendre toutes ces dates conformes au format ISO.
+2. L'ensemble des regex utilisées pour ce nettoyage est disponible dans la recette du jeu `compute_bp16-loc_net_datesNaissMort_net`
+
+### Concernant les périodes historiques des auteurs
+Une colonne **periode auteur** a été ajoutée afin de trier les auteurs selon leur période historique. De manière conventionnelle il a été retenu de se baser sur leur **date de mort**. Les tranches de dates choisies pour délimiter les périodes sont les suivantes:
+* Antique : avant JC à 500 inclu
+* Médiévale : de 501 à 1449
+* Moderne : a partir de 1450
+
 # Visualisations
 ## Langues des éditions
 ![BP16 plus Langue oeuvres](previsualisations/langues-oeuvres.png)
@@ -195,3 +224,16 @@ Cette visualisation fait clairement apparaître plusieurs phénomènes :
 ![adresses-imprim](previsualisations/adresses-imprim.png)
 
 La visualisation [BP16 plus Carte imprimeurs-libraires](https://public.tableau.com/app/profile/s.bastien.biay/viz/BP16plusCarteimprimeurs-libraires/Feuille2) restitue sur la carte du Paris ancien (il s'agit de la carte de l'Abbé Delagrive, du début du XVIIIe siècle) les coordonnées géographiques des rues qui ont pu être croisées avec succès avec les adresses des imprimeurs-libraires. Chaque point correspond à la notice Wikidata d'une rue de Paris et précise le nombre d'imprimeurs-libraires rattachés à cette adresse. Le Quartier-Latin et l'Ile de la Cité se distinguent naturellement sur la carte, avec la rue Saint-Jacques, la rue Neuve Notre-Dame et le Palais comme lieu totalisant le plus grand nombre d'enseignes de librairie.
+
+## Auteurs selon périodes
+### Auteurs inconnus pris en compte
+![periodes-auteurs-inconnus](previsualisations/periodes-auteurs-inconnus.png)
+
+La visualisation [BP16 plus periodes oeuvres](https://public.tableau.com/app/profile/falcoz/viz/BP16plusperiodesoeuvres/Feuille1) établie le nombre d'éditions par années en y faisant figurer la proportion des auteurs représentés selon leur période historique (antique, médiévale et moderne) en se basant sur leur date de mort. Dans cette première version de visualisation, nous prenons en compte les oeuvres dont les auteurs sont inconnus. On remarque à propos que ces derniers représentent, entre 1500 et 1550, la très grande majorité, allant pour certaines années jusqu'à plus de 80% des oeuvres. Le reste des ouvrages représentent en majorité des auteurs de l'époque moderne, puis en quantité beaucoup plus faible des auteurs médiévaux, certaines années (comme 1511 ou 1528) n'en contenant même aucun. Les auteurs antiques quant à eux, surprenamment, constituent la partie la plus faible en proportions et sont absents dans 40% des années. On remarque en deuxième lieu qu'à partir des années 1550, le nombre de publications s'effondre, passant de plus de 200 à une petite dizaine, comme cela était visible dans la visualisation [BP16 plus Langue oeuvres](voir plus haut)
+
+### Auteurs inconnus non pris en compte
+![periodes-auteurs-connus](previsualisations/periodes-auteurs-connus.png)
+
+La visualisation [BP16 plus periodes oeuvres 2](https://public.tableau.com/app/profile/falcoz/viz/BP16plusperiodesoeuvres2/Feuille2) est une sorte de "zoom" de la visualisation précédente permettant de mieux se rendre compte de la représentation des périodes par années, sans être encombrés par la donnée des oeuvres aux auteurs inconnus. L'écart entre la quasi absence des auteurs antiques et la grande prédominance des ouvrages d'auteurs d'époque moderne est d'autant plus visible.
+
+
