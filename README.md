@@ -239,9 +239,10 @@ La visualisation [BP16 plus periodes oeuvres 2](https://public.tableau.com/app/p
 ## Localisation actuelle des éditions
 ![lieux-conversation](previsualisations/lieux-conservation.png)
 
-La visualisation [BP16 Lieux Conservation](https://public.tableau.com/app/profile/zcappe/viz/LieuxConservation/Feuille1)
+La visualisation [BP16 Lieux Conservation](https://public.tableau.com/app/profile/zcappe/viz/LieuxConservation/Feuille1) permet de repérer la localisation actuelle de toutes les éditions répertoriées dans le BP16, grâce aux coordonnées géographiques qui ont été trouvées pour chaque institution de conservation. On remarque une répartition très importante des ouvrages à travers le monde, en particulier en Europe et aux Etats-Unis. Une visualisation comme celle-ci donne une idée de l'importance de la circulation des ouvrages à travers le temps, et peut permettre aux chercheurs de localiser plus rapidement les éditions afin, par exemple, de pouvoir les consulter.
+
 
 ## Imprimeurs-libraires par ordre d'importance
 ![imprimeurs-libraires](previsualisations/imprimeurs-libraires.png)
 
-La visualisation [BP16 Imprimeurs-Libraires](https://public.tableau.com/app/profile/zcappe/viz/BP16ImprimeursLibraires/Feuille3)
+La visualisation [BP16 Imprimeurs-Libraires](https://public.tableau.com/app/profile/zcappe/viz/BP16ImprimeursLibraires/Feuille3) nous donne une idée de l'importance des imprimeurs-libaires du XVIe siècle à Paris en fonction de leur nombre d'éditions. On peut aussi remarquer les limites des données, qui répète un certain nombre de fois les mêmes imprimeurs libraires qui se sont associés pour réaliser certaines éditions, et dont nous n'avons pas pu séparer les noms sans dénaturer la valeur de ces données, ce qui fausse le calcul. Néanmoins, les noms des  imprimeurs-libraires qui ressortent le plus, comme Jean Petit, Josse Bade ou Robert Estienne, sont tout à fait cohérents avec leur importance en tant qu'imprimeurs-libraires à l'époque, et les données sont donc valables malgré les quelques cas particuliers.
