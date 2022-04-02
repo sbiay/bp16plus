@@ -229,11 +229,19 @@ La visualisation [BP16 plus Carte imprimeurs-libraires](https://public.tableau.c
 ### Auteurs inconnus pris en compte
 ![periodes-auteurs-inconnus](previsualisations/periodes-auteurs-inconnus.png)
 
-La visualisation [BP16 plus periodes oeuvres](https://public.tableau.com/app/profile/falcoz/viz/BP16plusperiodesoeuvres/Feuille1) établie le nombre d'éditions par années en y faisant figurer la proportion des auteurs représentés selon leur période historique (antique, médiévale et moderne) en se basant sur leur date de mort. Dans cette première version de visualisation, nous prenons en compte les oeuvres dont les auteurs sont inconnus. On remarque à propos que ces derniers représentent, entre 1500 et 1550, la très grande majorité, allant pour certaines années jusqu'à plus de 80% des oeuvres. Le reste des ouvrages représentent en majorité des auteurs de l'époque moderne, puis en quantité beaucoup plus faible des auteurs médiévaux, certaines années (comme 1511 ou 1528) n'en contenant même aucun. Les auteurs antiques quant à eux, surprenamment, constituent la partie la plus faible en proportions et sont absents dans 40% des années. On remarque en deuxième lieu qu'à partir des années 1550, le nombre de publications s'effondre, passant de plus de 200 à une petite dizaine, comme cela était visible dans la visualisation `BP16 plus Langue oeuvres`.
+La visualisation [BP16 plus periodes oeuvres](https://public.tableau.com/app/profile/falcoz/viz/BP16plusperiodesoeuvres/Feuille1) établit le nombre d'éditions par années en y faisant figurer la proportion des auteurs représentés selon leur période historique (antique, médiévale et moderne) en se basant sur leur date de mort. Dans cette première version de visualisation, nous prenons en compte les oeuvres dont les auteurs sont inconnus. On remarque à propos que ces derniers représentent, entre 1500 et 1550, la très grande majorité, allant pour certaines années jusqu'à plus de 80% des oeuvres. Le reste des ouvrages représentent en majorité des auteurs de l'époque moderne, puis en quantité beaucoup plus faible des auteurs médiévaux, certaines années (comme 1511 ou 1528) n'en contenant même aucun. Les auteurs antiques quant à eux, surprenamment, constituent la partie la plus faible en proportions et sont absents dans 40% des années. On remarque en deuxième lieu qu'à partir des années 1550, le nombre de publications s'effondre, passant de plus de 200 à une petite dizaine, comme cela était visible dans la visualisation `BP16 plus Langue oeuvres`.
 
 ### Auteurs inconnus non pris en compte
 ![periodes-auteurs-connus](previsualisations/periodes-auteurs-connus.png)
 
 La visualisation [BP16 plus periodes oeuvres 2](https://public.tableau.com/app/profile/falcoz/viz/BP16plusperiodesoeuvres2/Feuille2) est une sorte de "zoom" de la visualisation précédente permettant de mieux se rendre compte de la représentation des périodes par années, sans être encombrés par la donnée des oeuvres aux auteurs inconnus. L'écart entre la quasi absence des auteurs antiques et la grande prédominance des ouvrages d'auteurs d'époque moderne est d'autant plus visible.
 
+## Localisation actuelle des éditions
+![lieux-conversation](previsualisations/lieux-conservation.png)
 
+La visualisation [BP16 Lieux Conservation](https://public.tableau.com/app/profile/zcappe/viz/LieuxConservation/Feuille1)
+
+## Imprimeurs-libraires par ordre d'importance
+![imprimeurs-libraires](previsualisations/imprimeurs-libraires.png)
+
+La visualisation [BP16 Imprimeurs-Libraires](https://public.tableau.com/app/profile/zcappe/viz/BP16ImprimeursLibraires/Feuille3)
