@@ -62,6 +62,9 @@ Cas particuliers :
 - Lorsque la **Date publication complète** contient une information issue d'une analyse (elle figure entre crochets), c'est cette dernière valeur qui a été retenu pour renseigner l'attribut **date ISO**.
 - Lorsque la **Date publication complète** décrit un intervalle, la limite basse a été renseignée selon le même format que **date ISO** sous l'attribut **Date publication ISO jusqua**
 
+## Les lieux de conservation
+Les lieux de conservation des éditions se présentaient sous la forme suivante "Ville, institution de conservation (pays ou région)(informations sur les exemplaires)(état de l'exemplaire)" dans la colonne `?localisation`. A l'aide d'expressions régulières, les données ont été séparées en quatre colonnes, `Ville conservation item`, `Institution de conservation item`, `Informations item` et `Etat item`, qui permettent de bien distinguer les informations qui étaient contenues dans une même colonne. Les informations sur les pays ou régions (voire départements), trop irrégulières, n'ont pas été conservées. Ce nettoyage des données a aussi permis, plus tard, un enrichissement du jeu de données à l'aide des colonnes `Ville conservation item` et `Institution conservation item`.
+
 # Enrichissements
 ## La langue des ouvrages
 On a récupéré les langues des **expressions** dont le dump BP16 contient les **manifestations** (modèle FRBR).
