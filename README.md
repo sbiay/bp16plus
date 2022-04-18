@@ -2,7 +2,7 @@ BP16-plus
 ===
 
 # Présentation générale du projet
-A partir du dump BP16, nous avons constitué un jeu de données relatifs aux éditions, leurs exemplaires, leurs auteurs, leurs libraires (chaque édition possède donc des doublons lorsqu'elle a plusieurs auteurs, plusieurs libraires ou plusieurs exemplaires) afin de procéder à des enrichissements sur :
+A partir du dump BP16, nous avons constitué un jeu de données relatif aux éditions, leurs exemplaires, leurs auteurs, leurs libraires (chaque édition possède donc des doublons lorsqu'elle a plusieurs auteurs, plusieurs libraires ou plusieurs exemplaires) afin de procéder à des enrichissements sur :
 1. Les exemplaires : enrichir leurs lieux de conservation par des données de géolocalisation les lieux à partir de Wikidata ;
 2. Les auteurs : rapatrier des données biographiques (nom et dates) à partir de data.bnf.fr ;
 3. Les imprimeurs-libraires : rapatrier des données biographiques et leurs adresses d'activité à partir du [CERL Thesaurus](https://data.cerl.org/thesaurus/_search).
